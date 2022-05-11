@@ -102,7 +102,12 @@ function listLabels(auth) {
                                 content.lastIndexOf("</h2></center>")
                             );
                             console.log(myCode);
-                            resolve(myCode);
+
+                            if(typeof parseInt(myCode) !== 'undefined'){
+                                resolve(myCode);
+                            } else {
+                                reject();
+                            }
                             gmail.users.messages.trash({userId:'me', id:message.id},
                                 (err, res) => {
                                     if (err) return console.log('The API returned an error: ' + err);
