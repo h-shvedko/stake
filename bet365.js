@@ -1,7 +1,7 @@
 const fileSystem = require('fs');
 const constants = require("./constants.js");
-const {browser} = require("protractor");
-
+const {browser, element} = require("protractor");
+let until;
 async function writeLog(d) {
     console.log(d);
     // log_file.write(util.format(d) + '\n');
@@ -15,6 +15,7 @@ describe('Login ', function () {
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000000;
         browser.waitForAngularEnabled(false);
         browser.get('https://www.bet365.de/');
+        until = protractor.ExpectedConditions;
     });
 
     it('should see button', async function () {
@@ -25,8 +26,7 @@ describe('Login ', function () {
         });
     });
 
-    it('should sign in', function (done) {
-        const until = protractor.ExpectedConditions;
+    it('should sign in', function () {
         const loginModalButton = element(By.css('div.hm-MainHeaderRHSLoggedOutWide_Login'));
         // browser.executeScript('window.scrollTo(0,0);');
         browser.sleep(1000);
@@ -50,6 +50,36 @@ describe('Login ', function () {
                 });
                 browser.waitForAngular();
                 await writeLog("Logged in!");
+                await browser.wait(until.presenceOf(element(By.css('iframe.lp-UserNotificationsPopup_Frame'))), 15000,
+                    'Element taking too long to appear in the DOM').catch(async (e) => {
+                    await writeLog("Looong time to continue");
+                });
+            });
+        });
+    });
+
+    it('should go to tennis', function (done) {
+        browser.switchTo().frame(element(By.css('iframe.lp-UserNotificationsPopup_Frame')).getWebElement());
+        browser.sleep(1000);
+        const continueElement = element(By.css('#Continue'));
+        continueElement.click().then(async () => {
+            browser.switchTo().defaultContent();
+            const continue2Element = element(By.css('.llm-LastLoginModule_Button '));
+            await browser.wait(until.presenceOf(continue2Element), 15000,
+                'Element taking too long to appear in the DOM').catch(async (e) => {
+                await writeLog("Looong time 1");
+            });
+
+            continue2Element.click().then(async () => {
+                const closeButton = element(By.css('.pm-MessageOverlayCloseButton '));
+                closeButton.click().then(() => {
+                    // const tennis = element(By.cssContainingText('.wn-PreMatchItem span', 'Tennis'));
+                    // tennis.click().then(() => {
+                    //     const tennisHeadline = element(By.cssContainingText('.sm-Header_TitleText', 'Tennis'));
+                    //     expect(tennisHeadline.isPresent()).toBe(true);
+                    // });
+                    browser.get('https://www.bet365.de/#/IP/B13');
+                });
             });
         });
     });
