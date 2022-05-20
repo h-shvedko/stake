@@ -2,7 +2,7 @@
   "name": "bet365-robot",
   "version": "1.0.0",
   "description": "bet365 robot",
-  "main": "app.js",
+  "main": "bot.js",
   "dependencies": {
     "@antiadmin/anticaptchaofficial": "latest",
     "async": "latest",
@@ -12,13 +12,14 @@
     "jasmine-reporters": "^2.2.1",
     "logging": "^3.3.0",
     "mkdirp": "latest",
-    "npm": "^5.3.0",
+    "npm": "^8.10.0",
     "protractor": "^5.1.2",
     "protractor-angular-screenshot-reporter": "^0.1.2",
     "protractor-html-screenshot-reporter": "0.0.21",
     "protractor-screenshot-reporter": "0.0.5",
     "request": "latest",
     "selenium-webdriver": "latest",
+    "telegraf": "^4.8.2",
     "webpack": "latest",
     "xmlhttprequest": "latest"
   },
@@ -37,7 +38,9 @@
     "webpack-cli": "^3.3.7"
   },
   "scripts": {
-    "test:single": "protractor tests/functional/conf.js"
+    "start": "nodemon main.js",
+    "bet365": "protractor confBet365.js",
+    "webdriver-update": "webdriver-manager update"
   },
   "keywords": [
     "webpack",

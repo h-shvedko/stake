@@ -1,10 +1,22 @@
 const fileSystem = require('fs');
 const constants = require("./constants.js");
 const {browser, element} = require("protractor");
+
 let until;
+
 async function writeLog(d) {
     console.log(d);
     // log_file.write(util.format(d) + '\n');
+}
+
+function readConfig() {
+    try {
+        const rawdata = fileSystem.readFileSync('betConfig.json');
+        let parsedJsonConfig = JSON.parse(rawdata);
+        console.log(parsedJsonConfig);
+    } catch (e) {
+        console.log(e);
+    }
 }
 
 describe('Login ', function () {
@@ -16,6 +28,7 @@ describe('Login ', function () {
         browser.waitForAngularEnabled(false);
         browser.get('https://www.bet365.de/');
         until = protractor.ExpectedConditions;
+        readConfig();
     });
 
     it('should see button', async function () {
