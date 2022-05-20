@@ -11,7 +11,7 @@ async function writeLog(d) {
 
 function readConfig() {
     try {
-        const rawdata = fileSystem.readFileSync('betConfig.json');
+        const rawdata = fileSystem.readFileSync('betInfo.json');
         let parsedJsonConfig = JSON.parse(rawdata);
         console.log(parsedJsonConfig);
     } catch (e) {

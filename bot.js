@@ -214,7 +214,6 @@ bot.action('startBet', (ctx) => {
         ctx.reply("Upps! Something went wrong! Please try again.", betStartButton);
         return false;
     }
-
     ctx.reply("Your bet is processing. Wait a minute.");
 
 });
