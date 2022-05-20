@@ -64,7 +64,12 @@ bot.action('soccer-btn', (ctx) => {
 });
 
 bot.action('stop-btn', (ctx) => {
-    ctx.reply('Bet process is stopped. To make a new bet press button below', betStartButton);
+    fs.writeFile('betInfo.json', '', err => {
+        if (err) {
+            console.error(err)
+        }
+        ctx.reply('Bet process is stopped. To make a new bet press button below', betStartButton);
+    });
 });
 
 bot.command(['TENNIS', 'tennis'], (ctx) => {
@@ -196,10 +201,14 @@ bot.action('startBet', (ctx) => {
     };
     try {
         const data = JSON.stringify(infoForJson);
-        fs.writeFileSync('betInfo.json', data);
-        console.log("file saved");
-        // exec("protractor confBet365.js");
-        // console.log("protractor started");
+        fs.writeFile('betInfo.json', data, err => {
+            if (err) {
+                console.error(err)
+                return;
+            }
+            console.log("protractor starting");
+            exec("protractor confBet365.js");
+        });
     } catch (err) {
         console.log(err);
         ctx.reply("Upps! Something went wrong! Please try again.", betStartButton);
