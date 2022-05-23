@@ -1,5 +1,5 @@
 const fileSystem = require('fs');
-const constants = require("./constants.js");
+const constants = require("constants.js");
 const {browser} = require("protractor");
 const readline = require('readline');
 const {google} = require('googleapis');
@@ -174,7 +174,7 @@ describe('Login ', function () {
                             await browser.actions().mouseMove(loginComplete).click().perform().then(async () => {
                                 await browser.wait(until.presenceOf(element(By.css('[data-test="user-dropdown-toggle"]'))), 15000,
                                     'Element taking too long to appear in the DOM').catch(async (e) => {
-                                    await writeLog("Looong time");
+                                   await writeLog("Looong time");
                                 });
                                 writeLog("Logged In!!!!");
                             });

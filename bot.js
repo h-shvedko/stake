@@ -1,15 +1,16 @@
 const {Telegraf} = require("telegraf");
 const {spawn} = require("child_process");
-const fs = require('fs');
+const fileSystem = require("fs");
+const constants = require('./constants');
 
 const exec = (commands) => {
     spawn(commands, {stdio: "inherit", shell: true});
 };
 
 
-const bot = new Telegraf('5363170931:AAFwKQLhUj5cic2PCoerCuYRx-SYicAzOzo');
+const bot = new Telegraf(constants.telegrammAPI);
 bot.telegram.getUpdates(0, 100, -1).then((updates) => {
-    if(updates.length > 0){
+    if(updates.length > 0 && bot.polling && bot.polling.hasOwnProperty('offset')){
         bot.polling.offset = updates[updates.length - 1].update_id + 1;
     }
 });
@@ -64,7 +65,7 @@ bot.action('soccer-btn', (ctx) => {
 });
 
 bot.action('stop-btn', (ctx) => {
-    fs.writeFile('betInfo.json', '', err => {
+    fileSystem.writeFile('betInfo.json', '', err => {
         if (err) {
             console.error(err)
         }
@@ -201,13 +202,30 @@ bot.action('startBet', (ctx) => {
     };
     try {
         const data = JSON.stringify(infoForJson);
-        fs.writeFile('betInfo.json', data, err => {
+        fileSystem.writeFile('betInfo.json', data, err => {
             if (err) {
                 console.error(err)
                 return;
             }
             console.log("protractor starting");
             exec("protractor confBet365.js");
+
+            let interval = setInterval( () => {
+                try {
+                    if (fileSystem.existsSync('betInfoResponse.json')) {
+                        const rawdata = fileSystem.readFileSync('betInfoResponse.json');
+                        clearInterval(interval);
+                        const response = JSON.parse(rawdata);
+                        if(response === 1){
+                            ctx.reply("The bet was places successful.\n Do you want make another one?", betStartButton);
+                        } else {
+                            ctx.reply("The bet couldn't be placed (possible reason: maximal number of login is reached, could not find the match, sport art was wrong, and etc.).\n Please try again.", betStartButton);
+                        }
+                    }
+                } catch(err) {
+                    console.error(err)
+                }
+            }, 3000);
         });
     } catch (err) {
         console.log(err);
